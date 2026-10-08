@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gerador de Diligências – CGP/PMCE</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===================== INTERFACE (não vai para o PDF) ===================== -->
+  <header class="topo">
+    <h1>GERADOR DE DILIGÊNCIAS</h1>
+    <p>CGP/PMCE · Funciona 100% neste computador: nenhum dado é enviado para a internet.</p>
+  </header>
+
+  <main class="interface">
+
+    <div id="mensagem" class="mensagem" hidden></div>
+
+    <!-- SEÇÃO 1 -->
+    <section class="cartao">
+      <h2>1 · Dados do documento</h2>
+      <div class="grade">
+        <label>NUM-CI <span class="obr">*</span>
+          <input type="text" id="numCi" placeholder="Ex.: 001/2026">
+          <small class="dica">No documento aparece como: Diligência + o número digitado.</small>
+        </label>
+        <label>DATA (sai como "Fortaleza, 08 de outubro de 2026")
+          <input type="date" id="data">
+        </label>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 2 -->
+    <section class="cartao">
+      <h2>2 · Dados do Policial Militar</h2>
+      <div class="grade">
+        <label class="largo">NOME DO POLICIAL MILITAR <span class="obr">*</span>
+          <input type="text" id="nomePm" placeholder="Ex.: VALTER DE OLIVEIRA">
+        </label>
+        <label>MATRÍCULA / MF <span class="obr">*</span>
+          <input type="text" id="mfPm" placeholder="Ex.: 034.249-1-X">
+        </label>
+        <label>DATA DE INGRESSO <span class="obr">*</span>
+          <input type="date" id="ingresso">
+        </label>
+        <label>DATA DE SAÍDA <span class="obr">*</span>
+          <input type="date" id="saida">
+        </label>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 3 -->
+    <section class="cartao">
+      <h2>3 · Ofício</h2>
+      <div class="grade">
+        <label class="largo">NÚMERO DO OFÍCIO <span class="obr">*</span>
+          <input type="text" id="oficio" placeholder="Ex.: 037682/2026/PGE/PROJUD">
+        </label>
+      </div>
+    </section>
+
+    <!-- SEÇÃO 4 -->
+    <section class="cartao">
+      <h2>4 · Diligências</h2>
+      <p class="dica" style="margin:-4px 0 10px">Período: a 1ª diligência usa a data de ingresso e as demais "De acordo com a lotação no SAPM". Você pode editar qualquer período.</p>
+      <div id="listaDilig"></div>
+      <button type="button" class="btn btn-sec" id="btnAddDilig">+ ADICIONAR DILIGÊNCIA</button>
+    </section>
+
+    <!-- SEÇÃO 5 -->
+    <section class="cartao">
+      <h2>5 · Espelho do SAPM</h2>
+      <label>UPLOAD DO ESPELHO DO SAPM (PNG, JPG ou JPEG) — opcional
+        <input type="file" id="arqSapm" accept=".png,.jpg,.jpeg,image/png,image/jpeg">
+      </label>
+      <div id="sapmInfo" class="sapm-info" hidden>
+        <img id="sapmMiniatura" alt="Miniatura do espelho do SAPM">
+        <button type="button" class="btn-link" id="btnRemoverSapm">REMOVER IMAGEM</button>
+      </div>
+      <p class="dica">A imagem fica somente no seu navegador. Sem imagem, a seção "Espelho do SAPM" não aparece no documento.</p>
+    </section>
+
+    <!-- SEÇÃO 6 -->
+    <section class="cartao">
+      <h2>6 · Períodos específicos em análise (opcional)</h2>
+      <label>TEXTO DO ITEM "PERÍODOS ESPECÍFICOS EM ANÁLISE"
+        <textarea id="periodosEsp" rows="3" placeholder="Deixe em branco para não preencher este item."></textarea>
+      </label>
+    </section>
+
+    <!-- SEÇÃO 7 -->
+    <section class="cartao">
+      <h2>7 · Assinatura</h2>
+      <label>QUEM ASSINA <span class="obr">*</span>
+        <select id="assSelect"></select>
+      </label>
+      <p id="assResumo" class="assin-resumo"></p>
+      <div id="assManual" class="grade" hidden>
+        <label class="largo">NOME DO ASSINANTE <span class="obr">*</span>
+          <input type="text" id="assNome" placeholder="Ex.: Francisca ASMENHA Cruz Furtado Torquato">
+        </label>
+        <label>POSTO / GRADUAÇÃO <span class="obr">*</span>
+          <input type="text" id="assPosto" placeholder="Ex.: CEL QOPM">
+        </label>
+        <label>MF <span class="obr">*</span>
+          <input type="text" id="assMf" placeholder="Ex.: 10851319">
+        </label>
+        <label class="largo">CARGO <span class="obr">*</span>
+          <input type="text" id="assCargo" placeholder="Ex.: COORDENADORA DE GESTÃO DE PESSOAS DA PMCE">
+        </label>
+      </div>
+      <p class="dica">Palavras escritas só em MAIÚSCULAS no nome (ex.: ASMENHA) saem em negrito, como no modelo.</p>
+    </section>
+
+    <!-- BOTÕES -->
+    <section class="barra-botoes">
+      <button type="button" class="btn btn-pri" id="btnVisualizar">VISUALIZAR DOCUMENTO</button>
+      <button type="button" class="btn btn-pri" id="btnPdf">GERAR PDF</button>
+      <button type="button" class="btn btn-sec" id="btnSalvar">SALVAR RASCUNHO</button>
+      <button type="button" class="btn btn-sec" id="btnCarregar">CARREGAR RASCUNHO</button>
+      <button type="button" class="btn btn-perigo" id="btnLimpar">LIMPAR</button>
+    </section>
+    <p class="dica centro">Para gerar o PDF: <strong>GERAR PDF</strong> → no Chrome, em "Destino", escolha <strong>Salvar como PDF</strong> → Salvar.</p>
+
+  </main>
+
+  <!-- ===================== PRÉ-VISUALIZAÇÃO / DOCUMENTO ===================== -->
+  <section class="area-previa" id="areaPrevia">
+    <h2 class="nao-imprimir titulo-previa">PRÉ-VISUALIZAÇÃO DO DOCUMENTO</h2>
+    <p class="nao-imprimir dica centro" id="avisoSemSapm" hidden>Nenhuma imagem do SAPM foi anexada: a seção "Espelho do SAPM" foi omitida do documento.</p>
+    <p class="nao-imprimir dica centro">Esta prévia é uma folha contínua. As quebras de página reais aparecem na tela de impressão do Chrome.</p>
+    <div id="folha" class="folha"></div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

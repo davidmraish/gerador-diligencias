@@ -1,0 +1,174 @@
+/* =====================================================================
+   GERADOR DE DILIGÊNCIAS – CGP/PMCE
+   Parte 1: interface (formulário)      -> NÃO aparece no PDF
+   Parte 2: documento (folha A4)        -> aparece no PDF
+   Parte 3: impressão (@page / @media print)
+   ===================================================================== */
+
+/* ---------------------- PARTE 1: INTERFACE ---------------------- */
+:root {
+  --azul: #1f3a5f;
+  --azul-claro: #e8eef6;
+  --borda: #cfd7e2;
+  --fundo: #f0f3f7;
+  --vermelho: #b3261e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--fundo);
+  color: #1b1f24;
+}
+.topo { background: var(--azul); color: #fff; padding: 18px 24px; }
+.topo h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
+.topo p { margin: 4px 0 0; font-size: 13px; opacity: .85; }
+
+.interface { max-width: 900px; margin: 20px auto; padding: 0 16px; }
+.cartao {
+  background: #fff; border: 1px solid var(--borda); border-radius: 8px;
+  padding: 16px 18px; margin-bottom: 14px;
+}
+.cartao h2 { margin: 0 0 12px; font-size: 15px; color: var(--azul); }
+.grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grade .largo { grid-column: 1 / -1; }
+label { display: block; font-size: 12px; font-weight: 600; color: #3c4653; }
+[hidden] { display: none !important; }
+label input, label textarea, label select {
+  display: block; width: 100%; margin-top: 4px; padding: 9px 10px;
+  font: 14px "Segoe UI", Arial, sans-serif; color: #111;
+  border: 1px solid #aab4c2; border-radius: 6px; background: #fff;
+}
+label input[type="file"] { padding: 7px; }
+label input:focus, label textarea:focus { outline: 2px solid #5b8bd0; border-color: #5b8bd0; }
+.obr { color: var(--vermelho); }
+.dica { font-size: 12px; color: #5a6675; margin: 8px 0 0; }
+.dica.centro { text-align: center; }
+
+.dilig {
+  background: var(--azul-claro); border: 1px solid var(--borda);
+  border-radius: 6px; padding: 10px 12px; margin-bottom: 10px;
+}
+.dilig-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; color: var(--azul); }
+
+.btn {
+  font: 700 13px "Segoe UI", Arial, sans-serif; letter-spacing: .3px;
+  border: 0; border-radius: 6px; padding: 11px 16px; cursor: pointer;
+}
+.btn-pri { background: var(--azul); color: #fff; }
+.btn-pri:hover { background: #16304f; }
+.btn-sec { background: #fff; color: var(--azul); border: 1px solid var(--azul); }
+.btn-sec:hover { background: var(--azul-claro); }
+.btn-perigo { background: #fff; color: var(--vermelho); border: 1px solid var(--vermelho); }
+.btn-perigo:hover { background: #fdecea; }
+.btn-link { background: none; border: 0; color: var(--vermelho); font: 700 12px "Segoe UI", Arial, sans-serif; cursor: pointer; }
+.btn-link:hover { text-decoration: underline; }
+.barra-botoes { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 18px 0 6px; }
+
+.sapm-info { display: flex; align-items: center; gap: 14px; margin-top: 10px; }
+.sapm-info img { max-height: 70px; max-width: 220px; border: 1px solid var(--borda); }
+
+.mensagem { border-radius: 6px; padding: 12px 14px; margin-bottom: 14px; font-size: 14px; }
+.mensagem.erro { background: #fdecea; border: 1px solid #f1aeb5; color: #7a1c15; }
+.mensagem.ok { background: #e6f4ea; border: 1px solid #9bd0ab; color: #1e5b31; }
+.mensagem ul { margin: 6px 0 0; padding-left: 20px; }
+.mensagem[hidden] { display: none; }
+
+.area-previa { padding: 10px 0 40px; }
+.titulo-previa { text-align: center; color: var(--azul); font-size: 16px; margin: 10px 0 4px; }
+
+/* ---------------------- PARTE 2: DOCUMENTO ---------------------- */
+/* Medidas tiradas do modelo Word:
+   margem esquerda 17,5 mm · direita 15,1 mm + recuo 7,5 mm = 22,6 mm
+   fonte Carlito/Calibri 12 pt · espaçamento 1,5 · texto justificado */
+.folha {
+  width: 210mm; min-height: 297mm; margin: 12px auto 0; background: #fff;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, .3);
+  font-family: Carlito, Calibri, "Segoe UI", Arial, sans-serif;
+  font-size: 12pt; line-height: 1.83; color: #000;
+}
+.folha table.pagina { width: 210mm; height: 297mm; border-collapse: collapse; table-layout: fixed; }
+.folha thead { display: table-header-group; }
+.folha tfoot { display: table-footer-group; }
+.folha td { padding: 0; vertical-align: top; border: 0; }
+
+/* cabeçalho (repete em todas as páginas) */
+.folha td.cab { padding: 12.7mm 0 7mm 17.5mm; }
+.folha .cab img { display: block; width: 88.3mm; height: 19.9mm; margin: 0 auto 3.5mm; margin-left: calc((210mm - 17.5mm - 15.1mm - 88.3mm) / 2); }
+.folha .numci {
+  margin: 0; font-family: Montserrat, "Segoe UI", Arial, sans-serif;
+  font-weight: bold; font-size: 11pt; line-height: 1.3; color: #434343;
+}
+
+/* corpo */
+.folha td.corpo { padding: 0 22.6mm 0 17.5mm; }
+.folha p { margin: 0; text-align: justify; orphans: 2; widows: 2; }
+.folha .data {
+  text-align: right; margin-right: -7.5mm; padding-top: 6mm;
+  font-family: Montserrat, "Segoe UI", Arial, sans-serif;
+  font-weight: bold; font-size: 11pt; color: #434343; line-height: 1.5;
+}
+.folha .c { text-align: center; }
+.folha .rec { text-indent: 12.49mm; }
+.folha .rec2 { text-indent: 6.35mm; }
+.folha .v { min-height: 1.83em; }
+.folha .largo-d { margin-right: -7.5mm; }
+.folha .tit { font-weight: bold; text-align: center; text-decoration: underline; break-after: avoid; page-break-after: avoid; }
+.folha .tit14 { font-size: 14pt; }
+.folha .negrito { font-weight: bold; break-after: avoid; page-break-after: avoid; }
+
+.folha .dil { break-inside: avoid; page-break-inside: avoid; }
+
+/* listas (● e 1. 2. 3.) */
+.folha ul, .folha ol { list-style: none; margin: 0; padding: 0; counter-reset: n; }
+.folha li {
+  margin-left: 12.7mm; text-indent: -6.35mm; text-align: justify;
+  break-inside: avoid; page-break-inside: avoid;
+}
+.folha li::before { display: inline-block; width: 6.35mm; text-indent: 0; }
+.folha ul li::before { content: "\25CF"; }
+.folha ol li { counter-increment: n; }
+.folha ol li::before { content: counter(n) "."; }
+.folha li.sem-d { margin-right: -7.5mm; }
+.folha ul.resumo li { font-weight: bold; }
+
+/* imagem do SAPM */
+.folha .espelho { break-inside: avoid; page-break-inside: avoid; }
+.folha .espelho img { display: block; margin: 0 auto; max-width: 100%; max-height: 235mm; width: auto; height: auto; }
+
+/* bloco final: título + texto + assinatura nunca se separam */
+.folha .final { break-inside: avoid; page-break-inside: avoid; }
+.folha .assinatura { break-inside: avoid; page-break-inside: avoid; margin-top: 3.2em; }
+.folha .assinatura p { text-align: left; }
+.folha .assinatura .ass { text-align: center; line-height: 1.4; }
+.folha .assinatura .espaco-ass { height: 4em; }
+
+/* rodapé (repete em todas as páginas) */
+.folha td.rod { padding-left: 17.5mm; font-size: 10pt; line-height: 1.4; text-align: left; }
+.folha .rod p { text-align: left; }
+.folha .rod img { display: block; width: 210mm; height: 13mm; margin-left: -17.5mm; }
+
+/* cópia fixa do rodapé: só existe na impressão */
+.folha .rod-fixo { display: none; }
+
+/* ---------------------- PARTE 3: IMPRESSÃO ---------------------- */
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  html, body { background: #fff; margin: 0; padding: 0; }
+  body > *:not(.area-previa) { display: none !important; }
+  .nao-imprimir { display: none !important; }
+  .area-previa { padding: 0; margin: 0; }
+  .folha { margin: 0; box-shadow: none; min-height: 0; }
+  .folha table.pagina { height: auto; }
+  /* rodapé: o <td> só reserva espaço; o rodapé de verdade fica fixo na base de cada página */
+  .folha td.rod { height: 29mm; padding: 0; }
+  .folha .rod-tela { display: none; }
+  .folha .rod-fixo { display: block; position: fixed; left: 0; bottom: 0; width: 210mm; padding-left: 17.5mm; font-size: 10pt; line-height: 1.4; background: #fff; }
+  .folha .rod-fixo p { text-align: left; }
+  .folha .rod-fixo img { display: block; width: 210mm; height: 13mm; margin-left: -17.5mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* seletor de assinante */
+.assin-resumo { margin: 8px 0 0; padding: 8px 10px; background: var(--azul-claro); border-radius: 6px; font-size: 13px; }
